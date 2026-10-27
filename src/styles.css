@@ -1,0 +1,161 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: "Cairo", system-ui, sans-serif;
+  --font-sans: "Tajawal", system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-secondary: var(--secondary);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-accent: var(--accent);
+  --color-ivory: var(--ivory);
+  --color-sand: var(--sand);
+  --color-photo-surface: var(--photo-surface);
+  --shadow-card: var(--shadow-card);
+}
+
+:root {
+  --background: #f5f0e6;
+  --foreground: #20261b;
+  --card: #fffdf8;
+  --card-foreground: #20261b;
+  --secondary: #eee5d2;
+  --muted: #e8ddc7;
+  --muted-foreground: #5e6458;
+  --border: #d8c8a8;
+  --brand: #68764a;
+  --brand-deep: #3f4a30;
+  --brand-foreground: #f5f0e6;
+  --accent: #00d9c0;
+  --ivory: #f5f0e6;
+  --sand: #d8c8a8;
+  --photo-surface: #eee5d2;
+  --shadow-card: 0 14px 40px -26px rgb(63 74 48 / 0.42);
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #f0f0f0;
+  --card: #2d2d2d;
+  --card-foreground: #f0f0f0;
+  --secondary: #20231f;
+  --muted: #262626;
+  --muted-foreground: #b7b8b2;
+  --border: #474a43;
+  --brand: #9aa679;
+  --brand-deep: #68764a;
+  --brand-foreground: #0a0a0a;
+  --accent: #00d9c0;
+  --ivory: #f0f0f0;
+  --sand: #d8c8a8;
+  --photo-surface: #232620;
+  --shadow-card: 0 16px 44px -24px rgb(0 0 0 / 0.85);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    min-width: 320px;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  p {
+    margin-top: 0;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+  }
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+  a {
+    text-underline-offset: 0.2em;
+  }
+  :focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 82%, white);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--brand) 35%, transparent);
+  }
+}
+
+.memorial-hero {
+  position: relative;
+  background:
+    radial-gradient(circle at 78% 16%, rgb(0 217 192 / 0.16), transparent 23rem),
+    linear-gradient(125deg, #26311f 0%, #3f4a30 55%, #20291c 100%);
+}
+
+.memorial-hero::before,
+.memorial-hero::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 10rem;
+  content: "";
+  pointer-events: none;
+}
+
+.memorial-hero::before {
+  background: repeating-radial-gradient(
+    ellipse at 50% 100%,
+    transparent 0 1.25rem,
+    rgb(245 240 230 / 0.08) 1.35rem 1.45rem,
+    transparent 1.55rem 2.85rem
+  );
+  mask-image: linear-gradient(to top, black, transparent);
+}
+
+.memorial-hero::after {
+  background: linear-gradient(to top, rgb(10 10 10 / 0.13), transparent);
+}
+
+.hero-kicker {
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+.hero-orbit {
+  border: 1px solid rgb(245 240 230 / 0.17);
+  box-shadow:
+    inset 0 0 0 1.2rem rgb(245 240 230 / 0.035),
+    0 0 0 2.8rem rgb(245 240 230 / 0.025);
+}
+
+[dir="ltr"] .hero-kicker {
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 640px) {
+  .memorial-hero::before {
+    height: 6rem;
+  }
+}
