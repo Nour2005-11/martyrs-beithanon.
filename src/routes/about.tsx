@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, ScrollText } from "lucide-react";
+import { MapPin, ScrollText, ExternalLink } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { usePrefs } from "@/lib/prefs";
 
