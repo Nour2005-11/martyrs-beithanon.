@@ -58,8 +58,7 @@ const ar = {
   featuredTitle: "من الأرشيف",
   featuredText: "سجلات مختارة من الأرشيف المنشور. تُعرض الصور كما وردت في مصادرها المعتمدة.",
   prayerTitle: "دعاء ووفاء",
-  prayer:
-    "اللهم ارحم شهداء بيت حانون، وتقبّلهم بواسع رحمتك، واجبر قلوب أهلهم وأحبتهم، واحفظ أهل بيت حانون وغزة، واكتب لهم الأمن والسلامة والفرج القريب. اللهم احفظ أسماءهم وذكراهم في قلوبنا، واجعل هذه الذاكرة بابًا للدعاء والوفاء لهم.",
+  prayer: "اللهم ارحم شهداء بيت حانون، واغفر لهم، وتقبّلهم، واربط على قلوب أهلهم، واشفِ الجرحى، وفرّج عن أهلنا.",
   remembrance: "ليسوا أرقامًا في سجل، بل أرواح وأحلام وحكايات تستحق أن تبقى حاضرة في ذاكرتنا.",
   contributionTitle: "ساهم في حفظ الذاكرة",
   contributionText:
@@ -95,10 +94,12 @@ const ar = {
   notes: "ملاحظات أو مصدر",
   submitForReview: "إرسال للمراجعة",
   disabledSubmit: "إرسال للمراجعة",
-  privacyTitle: "الخصوصية والمراجعة",
-  privacyText:
-    "لا تضمن المساهمة النشر. لا تُنسب أي صلاحية إدارية للمساهمين، ولا تُرفق الصور المقترحة بالسجل الرسمي تلقائيًا.",
-  footerRights: (year: number) => `© ${year} ذاكرة بيت حانون. حُفظت الأسماء باحترام.`,
+  memorialNoteTitle: "وفاء واعتذار",
+  martyrOmissionText:
+    "نعتذر من أهلنا إن غاب عن هذا السجل اسمُ شهيد؛ فغيابه سهوٌ غير مقصود، ولا يُنقص أبداً من مكانته أو من عظيم تضحياته. سيبقى كل شهيد حاضراً في قلوبنا وذاكرتنا.",
+  beitHanounSacrificeText:
+    "قدّمت بيت حانون تضحياتٍ كبيرة وتكبّدت خساراتٍ موجعة، وسيبقى شهداؤها حاضرين في ذاكرة أهلها وكل من عرف صمودها.",
+  footerRights: (year: number) => `© ${year} ذاكرة بيت حانون. تبقى أسماؤهم حاضرة في ذاكرتنا.`,
   footerBy: "إعداد وتطوير: م. نور أكرم رزق دبور",
   footerSources: "المصادر والمنهجية",
   notFound: "الصفحة غير موجودة",
@@ -170,7 +171,7 @@ const en: typeof ar = {
     "Selected records from the published archive. Photographs appear only as provided by approved sources.",
   prayerTitle: "Prayer and remembrance",
   prayer:
-    "O God, have mercy on the martyrs of Beit Hanoun, receive them in Your vast mercy, comfort the hearts of their families and loved ones, protect the people of Beit Hanoun and Gaza, and grant them safety, relief, and peace. Preserve their names and memory in our hearts, and make this archive a place of prayer and fidelity.",
+    "O God, have mercy on the martyrs of Beit Hanoun, forgive them, accept them, comfort the hearts of their families, heal the wounded, and bring relief to our people.",
   remembrance:
     "They are not merely numbers in a record, but lives, dreams, and stories that deserve to remain in our collective memory.",
   contributionTitle: "Help preserve the memory",
@@ -207,10 +208,12 @@ const en: typeof ar = {
   notes: "Notes or source",
   submitForReview: "Submit for review",
   disabledSubmit: "Submit for review",
-  privacyTitle: "Privacy and review",
-  privacyText:
-    "Contributing does not guarantee publication. Contributors receive no administrative authority, and suggested photographs are never attached to the official record automatically.",
-  footerRights: (year: number) => `© ${year} Memory of Beit Hanoun. Names preserved with respect.`,
+  memorialNoteTitle: "Remembrance and an apology",
+  martyrOmissionText:
+    "We apologize to our community if a martyr’s name is missing from this record. Any omission is unintentional and never diminishes their place or great sacrifice. Every martyr remains present in our hearts and memory.",
+  beitHanounSacrificeText:
+    "Beit Hanoun has endured profound loss and made great sacrifices. Its martyrs will remain in the memory of its people and all who know its steadfastness.",
+  footerRights: (year: number) => `© ${year} Memory of Beit Hanoun. Their names remain in our memory.`,
   footerBy: "Design By Eng Nour A.R Dabour",
   footerSources: "Sources and methodology",
   notFound: "Page not found",
