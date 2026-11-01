@@ -102,7 +102,16 @@ function Suggest() {
             {message ? <p role="status" className={`rounded-xl p-4 text-sm leading-relaxed ${success ? "bg-secondary text-foreground" : "bg-destructive/10 text-destructive"}`}>{success ? <CheckCircle2 className="me-2 inline h-4 w-4"/> : null}{message}</p> : null}
           </div>
         </form>
-        <aside className="rounded-[1.7rem] bg-secondary p-7"><ShieldCheck className="h-8 w-8 text-brand" aria-hidden="true"/><h2 className="mt-5 font-heading text-2xl font-extrabold text-foreground">{t.privacyTitle}</h2><p className="mt-4 leading-relaxed text-muted-foreground">{t.privacyText}</p><p className="mt-6 text-sm leading-relaxed text-muted-foreground">{ar ? "كل مساهمة تبقى معلّقة حتى تراجعيها. لا يتم تعديل سجل الشهداء الأساسي من نموذج الإرسال العام." : "Each contribution stays pending until reviewed. Public submissions do not modify the main martyrs table."}</p></aside>
+        <aside className="rounded-[1.7rem] bg-secondary p-7">
+          <ShieldCheck className="h-8 w-8 text-brand" aria-hidden="true" />
+          <h2 className="mt-5 font-heading text-2xl font-extrabold text-foreground">
+            {t.memorialNoteTitle}
+          </h2>
+          <p className="mt-4 leading-relaxed text-muted-foreground">{t.martyrOmissionText}</p>
+          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+            {t.beitHanounSacrificeText}
+          </p>
+        </aside>
       </div>
     </section>
   );
