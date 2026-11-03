@@ -3,11 +3,12 @@ import { ArrowUpLeft, CalendarDays, ImagePlus } from "lucide-react";
 import type { MartyrRecord } from "@/data/martyrTypes";
 import type { Dict } from "@/lib/i18n";
 import { MartyrPhoto } from "./MartyrPhoto";
+import { formatDate } from "@/utils/date";
 
 type MartyrCardProps = { record: MartyrRecord; t: Dict };
 
 export function MartyrCard({ record, t }: MartyrCardProps) {
-  const date = record.martyrdomDateRaw || record.martyrdomDate;
+  const date = formatDate(record.martyrdomDate);
 
   return (
     <article className="group overflow-hidden rounded-[1.35rem] border border-border/90 bg-card shadow-card transition-transform duration-200 hover:-translate-y-1 hover:border-brand/45">
