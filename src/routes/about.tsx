@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, ScrollText, ExternalLink } from "lucide-react";
+import { ExternalLink, MapPin, ScrollText } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { usePrefs } from "@/lib/prefs";
 
@@ -18,12 +18,38 @@ export const Route = createFileRoute("/about")({
   component: About,
 });
 
+const beforeImages = [
+  "/images/beit-hanoun-before/bh3.jpg",
+  "/images/beit-hanoun-before/bh4.jpg",
+  "/images/beit-hanoun-before/bh5.jpg",
+  "/images/beit-hanoun-before/bh6.jpg",
+];
+
+const afterImages = [
+  "/images/beit-hanoun-after/beit-hanoun-after-01.jpg",
+  "/images/beit-hanoun-after/beit-hanoun-after-02.jpg",
+  "/images/beit-hanoun-after/beit-hanoun-after-03.jpg",
+  "/images/beit-hanoun-after/beit-hanoun-after-04.jpg",
+  "/images/beit-hanoun-after/beit-hanoun-after-05.jpg",
+  "/images/beit-hanoun-after/beit-hanoun-after-06.jpg",
+];
+
 function About() {
   const { t } = usePrefs();
   const sections = [
     { title: t.aboutLocationTitle, text: t.aboutLocation, icon: MapPin },
     { title: t.aboutLandTitle, text: t.aboutLand, icon: BrandMark },
     { title: t.aboutMemoryTitle, text: t.aboutMemory, icon: ScrollText },
+  ];
+  const photoGroups = [
+    {
+      title: t.aboutBeforeTitle,
+      images: beforeImages,
+    },
+    {
+      title: t.aboutAfterTitle,
+      images: afterImages,
+    },
   ];
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
@@ -51,6 +77,39 @@ function About() {
           </article>
         ))}
       </div>
+      <section className="mt-14">
+        <p className="mx-auto mb-7 max-w-4xl text-center text-lg font-semibold leading-relaxed text-muted-foreground sm:text-xl">
+          {t.aboutLossMessage}
+        </p>
+        <div className="grid gap-7 lg:grid-cols-2">
+          {photoGroups.map((group) => (
+            <section
+              key={group.title}
+              aria-label={group.title}
+              className="rounded-[1.7rem] border border-border bg-card p-5 shadow-card sm:p-6"
+            >
+              <h2 className="font-heading text-2xl font-extrabold text-foreground">
+                {group.title}
+              </h2>
+              <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4">
+                {group.images.map((src) => (
+                  <div
+                    key={src}
+                    className="overflow-hidden rounded-2xl border border-border bg-secondary"
+                  >
+                    <img
+                      src={src}
+                      alt={group.title}
+                      className="aspect-[4/3] w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </section>
       <div className="mt-12 grid gap-7 lg:grid-cols-[1.2fr_.8fr]">
         <section className="overflow-hidden rounded-[1.7rem] border border-border bg-card p-2 shadow-card">
           <iframe
@@ -74,16 +133,37 @@ function About() {
         </section>
         <aside className="grid gap-4">
           <figure className="overflow-hidden rounded-[1.7rem] border border-border bg-card shadow-card">
-            <img src="/beit-hanoun-gate.jpg" alt="بوابة مدينة بيت حانون" className="aspect-[4/3] w-full object-cover" loading="lazy" />
-            <figcaption className="p-4 text-sm font-bold text-foreground">بوابة بيت حانون</figcaption>
+            <img
+              src="/beit-hanoun-gate.jpg"
+              alt="بوابة مدينة بيت حانون"
+              className="aspect-[4/3] w-full object-cover"
+              loading="lazy"
+            />
+            <figcaption className="p-4 text-sm font-bold text-foreground">
+              بوابة بيت حانون
+            </figcaption>
           </figure>
           <figure className="overflow-hidden rounded-[1.7rem] border border-border bg-card shadow-card">
-            <img src="/beit-hanoun-fields.jpg" alt="الأراضي الزراعية في بيت حانون" className="aspect-[4/3] w-full object-cover" loading="lazy" />
-            <figcaption className="p-4 text-sm font-bold text-foreground">أرضها وذاكرتها الزراعية</figcaption>
+            <img
+              src="/beit-hanoun-fields.jpg"
+              alt="الأراضي الزراعية في بيت حانون"
+              className="aspect-[4/3] w-full object-cover"
+              loading="lazy"
+            />
+            <figcaption className="p-4 text-sm font-bold text-foreground">
+              أرضها وذاكرتها الزراعية
+            </figcaption>
           </figure>
           <figure className="overflow-hidden rounded-[1.7rem] border border-border bg-card shadow-card">
-            <img src="/beit-hanoun-sunset.jpg" alt="حقول بيت حانون وقت الغروب" className="aspect-[4/3] w-full object-cover" loading="lazy" />
-            <figcaption className="p-4 text-sm font-bold text-foreground">من ذاكرة الأرض</figcaption>
+            <img
+              src="/beit-hanoun-sunset.jpg"
+              alt="حقول بيت حانون وقت الغروب"
+              className="aspect-[4/3] w-full object-cover"
+              loading="lazy"
+            />
+            <figcaption className="p-4 text-sm font-bold text-foreground">
+              من ذاكرة الأرض
+            </figcaption>
           </figure>
         </aside>
       </div>
