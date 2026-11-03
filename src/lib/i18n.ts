@@ -22,8 +22,7 @@ const ar = {
   archiveTitle: "سجل شهداء بيت حانون",
   archiveIntro:
     "تُعرض السجلات كما هي متاحة في الأرشيف الرسمي، مع الحفاظ على الأسماء والبيانات المتحققة.",
-  archiveNotice:
-    "سجل تذكاري لحفظ الأسماء والذكريات، مع إتاحة البحث والتصفية حسب التاريخ.",
+  archiveNotice: "سجل تذكاري لحفظ الأسماء والذكريات، مع إتاحة البحث والتصفية حسب التاريخ.",
   results: (shown: number, total: number) => `يُعرض ${shown} من أصل ${total} سجلًا`,
   noResults: "لم نجد سجلًا مطابقًا. جرّب جزءًا من الاسم أو صيغة أخرى للكتابة.",
   showMore: "عرض المزيد",
@@ -58,7 +57,8 @@ const ar = {
   featuredTitle: "من الأرشيف",
   featuredText: "سجلات مختارة من الأرشيف المنشور. تُعرض الصور كما وردت في مصادرها المعتمدة.",
   prayerTitle: "دعاء ووفاء",
-  prayer: "اللهم ارحم شهداء بيت حانون، واغفر لهم، وتقبّلهم، واربط على قلوب أهلهم، واشفِ الجرحى، وفرّج عن أهلنا.",
+  prayer:
+    "اللهم ارحم شهداء بيت حانون، واغفر لهم، وتقبّلهم، واربط على قلوب أهلهم، واشفِ الجرحى، وفرّج عن أهلنا.",
   remembrance: "ليسوا أرقامًا في سجل، بل أرواح وأحلام وحكايات تستحق أن تبقى حاضرة في ذاكرتنا.",
   contributionTitle: "ساهم في حفظ الذاكرة",
   contributionText:
@@ -76,7 +76,10 @@ const ar = {
   aboutMemoryTitle: "حفظ الذاكرة",
   aboutMemory:
     "أُنشئت هذه المساحة لتبقى أسماء الشهداء حاضرة، ولتشارك العائلات وأبناء المدينة في حفظ الذاكرة بعناية واحترام.",
-  sourcesTitle: "صور من بيت حانون",
+  aboutBeforeTitle: "بيت حانون قبل الحرب",
+  aboutAfterTitle: "بيت حانون بعد الحرب",
+  aboutLossMessage:
+    "بين هاتين الصورتين وجعُ ما فقدته بيت حانون وأهلها؛ بيوتٌ وذكرياتٌ وحياةٌ لا تعوّضها الكلمات.",
   mapTitle: "بيت حانون على الخريطة",
   mapOpen: "فتح الموقع على خرائط Google",
   mapFrame: "خريطة بيت حانون",
@@ -190,7 +193,10 @@ const en: typeof ar = {
   aboutMemoryTitle: "Preserving memory",
   aboutMemory:
     "This space was created to keep the martyrs’ names present and invite families and residents to help preserve their memory with care and respect.",
-  sourcesTitle: "Sources to explore",
+  aboutBeforeTitle: "Beit Hanoun Before the War",
+  aboutAfterTitle: "Beit Hanoun After the War",
+  aboutLossMessage:
+    "Between these two images lies the grief for what Beit Hanoun and its people have lost—homes, memories, and a way of life that words cannot restore.",
   mapTitle: "Beit Hanoun on the map",
   mapOpen: "Open in Google Maps",
   mapFrame: "Map of Beit Hanoun",
@@ -213,7 +219,8 @@ const en: typeof ar = {
     "We apologize to our community if a martyr’s name is missing from this record. Any omission is unintentional and never diminishes their place or great sacrifice. Every martyr remains present in our hearts and memory.",
   beitHanounSacrificeText:
     "Beit Hanoun has endured profound loss and made great sacrifices. Its martyrs will remain in the memory of its people and all who know its steadfastness.",
-  footerRights: (year: number) => `© ${year} Memory of Beit Hanoun. Their names remain in our memory.`,
+  footerRights: (year: number) =>
+    `© ${year} Memory of Beit Hanoun. Their names remain in our memory.`,
   footerBy: "Design By Eng Nour A.R Dabour",
   footerSources: "Sources and methodology",
   notFound: "Page not found",
