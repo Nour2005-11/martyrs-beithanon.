@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { MartyrPhoto } from "@/components/MartyrPhoto";
 import { getMartyrById, hasArchiveConnection } from "@/data/martyrRepository";
 import { usePrefs } from "@/lib/prefs";
+import { formatDate } from "@/utils/date";
 
 export const Route = createFileRoute("/archive/$id")({
   head: () => ({
@@ -76,7 +77,7 @@ function MartyrDetails() {
     );
 
   const martyr = record.data;
-  const martyrdomDate = martyr.martyrdomDateRaw || martyr.martyrdomDate;
+  const martyrdomDate = formatDate(martyr.martyrdomDate);
   return (
     <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
       <Link
@@ -125,7 +126,7 @@ function MartyrDetails() {
               ) : null}
             </DetailField>
             <DetailField label={t.birthDate}>
-              {martyr.birthDate ? <span dir="ltr">{martyr.birthDate}</span> : t.dateUnavailable}
+              {martyr.birthDate ? <span dir="ltr">{formatDate(martyr.birthDate)}</span> : t.dateUnavailable}
             </DetailField>
 
           </dl>
