@@ -4,7 +4,7 @@ import { ArrowRight, CalendarDays, Tag } from "lucide-react";
 import type { ReactNode } from "react";
 import { MartyrPhoto } from "@/components/MartyrPhoto";
 import { getMartyrById, hasArchiveConnection } from "@/data/martyrRepository";
-import { formatDateDayMonthYear } from "@/lib/date-format";
+import { formatDateDayMonthYear, formatMartyrdomDate } from "@/lib/date-format";
 import { usePrefs } from "@/lib/prefs";
 
 export const Route = createFileRoute("/archive/$id")({
@@ -77,7 +77,7 @@ function MartyrDetails() {
     );
 
   const martyr = record.data;
-  const martyrdomDate = formatDateDayMonthYear(martyr.martyrdomDateRaw || martyr.martyrdomDate);
+  const martyrdomDate = formatMartyrdomDate(martyr.martyrdomDate, martyr.martyrdomDateRaw);
   const birthDate = formatDateDayMonthYear(martyr.birthDate);
   return (
     <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
