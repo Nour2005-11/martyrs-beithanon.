@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, CalendarDays, Tag, ImagePlus } from "lucide-react";
+import { ArrowRight, CalendarDays, Tag } from "lucide-react";
 import type { ReactNode } from "react";
 import { MartyrPhoto } from "@/components/MartyrPhoto";
 import { getMartyrById, hasArchiveConnection } from "@/data/martyrRepository";
+import { formatDateDayMonthYear } from "@/lib/date-format";
 import { usePrefs } from "@/lib/prefs";
-import { formatDate } from "@/utils/date";
 
 export const Route = createFileRoute("/archive/$id")({
   head: () => ({
@@ -68,7 +68,7 @@ function MartyrDetails() {
         <p className="text-muted-foreground">{t.recordNotFound}</p>
         <Link
           to="/archive"
-          search={{ q: "", month: "", page: 1 }}
+          search={{ q: "", page: 1 }}
           className="mt-5 inline-flex rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-brand-foreground"
         >
           {t.backToArchive}
@@ -77,12 +77,13 @@ function MartyrDetails() {
     );
 
   const martyr = record.data;
-  const martyrdomDate = formatDate(martyr.martyrdomDate);
+  const martyrdomDate = formatDateDayMonthYear(martyr.martyrdomDateRaw || martyr.martyrdomDate);
+  const birthDate = formatDateDayMonthYear(martyr.birthDate);
   return (
     <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
       <Link
         to="/archive"
-        search={{ q: "", month: "", page: 1 }}
+        search={{ q: "", page: 1 }}
         className="inline-flex items-center gap-2 text-sm font-bold text-brand underline decoration-brand/35 underline-offset-4"
       >
         <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -112,7 +113,6 @@ function MartyrDetails() {
               {martyr.englishName}
             </p>
           ) : null}
-          {!martyr.imageUrl ? <Link to="/suggest" search={{ type: "photo", martyrId: String(martyr.id) }} className="mt-5 inline-flex items-center gap-2 rounded-full border border-brand/40 px-4 py-2.5 text-sm font-bold text-brand hover:bg-secondary"><ImagePlus className="h-4 w-4" aria-hidden="true" />إضافة صورة لهذا الشهيد</Link> : null}
           <dl className="mt-9">
             <DetailField label={t.martyrdomDate}>
               <span className="inline-flex items-center gap-2">
@@ -126,9 +126,8 @@ function MartyrDetails() {
               ) : null}
             </DetailField>
             <DetailField label={t.birthDate}>
-              {martyr.birthDate ? <span dir="ltr">{formatDate(martyr.birthDate)}</span> : t.dateUnavailable}
+              {birthDate ? <span dir="ltr">{birthDate}</span> : t.dateUnavailable}
             </DetailField>
-
           </dl>
           <div className="mt-8 flex items-center gap-2 rounded-xl bg-secondary px-4 py-3 text-sm text-muted-foreground">
             <Tag className="h-4 w-4 text-brand" aria-hidden="true" />{" "}

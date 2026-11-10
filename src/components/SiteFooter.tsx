@@ -10,7 +10,9 @@ export function SiteFooter() {
         <BrandMark className="h-10 w-10 shrink-0" />
         <div>
           <p className="font-heading text-lg font-extrabold text-foreground">{t.siteName}</p>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">{t.footerRights(year)}</p>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            {t.footerRights(year)}
+          </p>
           <p className="mt-2 text-sm font-semibold text-brand">{t.footerBy}</p>
         </div>
       </div>

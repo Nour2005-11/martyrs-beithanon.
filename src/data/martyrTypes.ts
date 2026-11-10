@@ -47,5 +47,4 @@ export type ArchiveQuery = {
   page: number;
   pageSize: number;
   query?: string;
-  month?: string;
 };

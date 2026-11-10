@@ -1,14 +1,14 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpLeft, CalendarDays, ImagePlus } from "lucide-react";
+import { ArrowUpLeft, CalendarDays } from "lucide-react";
 import type { MartyrRecord } from "@/data/martyrTypes";
 import type { Dict } from "@/lib/i18n";
+import { formatDateDayMonthYear } from "@/lib/date-format";
 import { MartyrPhoto } from "./MartyrPhoto";
-import { formatDate } from "@/utils/date";
 
 type MartyrCardProps = { record: MartyrRecord; t: Dict };
 
 export function MartyrCard({ record, t }: MartyrCardProps) {
-  const date = formatDate(record.martyrdomDate);
+  const date = formatDateDayMonthYear(record.martyrdomDateRaw || record.martyrdomDate);
 
   return (
     <article className="group overflow-hidden rounded-[1.35rem] border border-border/90 bg-card shadow-card transition-transform duration-200 hover:-translate-y-1 hover:border-brand/45">
@@ -41,12 +41,6 @@ export function MartyrCard({ record, t }: MartyrCardProps) {
             <CalendarDays className="h-4 w-4" aria-hidden="true" />
             {date ? <span dir="ltr">{date}</span> : <span>{t.dateUnavailable}</span>}
           </p>
-          {!record.imageUrl ? (
-            <Link to="/suggest" search={{ type: "photo", martyrId: String(record.id) }} className="mt-3 inline-flex items-center justify-center gap-2 rounded-full border border-brand/40 px-4 py-2 text-sm font-bold text-brand hover:bg-secondary">
-              <ImagePlus className="h-4 w-4" aria-hidden="true" />
-              {"إضافة صورة شهيد"}
-            </Link>
-          ) : null}
           <Link
             to="/archive/$id"
             params={{ id: String(record.id) }}

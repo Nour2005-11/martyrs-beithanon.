@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search } from "lucide-react";
 import { useDeferredValue, useEffect, useState } from "react";
 import { MartyrCard } from "@/components/MartyrCard";
 import { getArchivePage, hasArchiveConnection } from "@/data/martyrRepository";
@@ -11,7 +11,6 @@ const PAGE_SIZE = 24;
 export const Route = createFileRoute("/archive/")({
   validateSearch: (search: Record<string, unknown>) => ({
     q: typeof search["q"] === "string" ? search["q"] : "",
-    month: typeof search["month"] === "string" ? search["month"] : "",
     page: typeof search["page"] === "number" && search["page"] > 0 ? Math.floor(search["page"]) : 1,
   }),
   head: () => ({
@@ -31,22 +30,23 @@ export const Route = createFileRoute("/archive/")({
 function Archive() {
   const { t } = usePrefs();
   const navigate = useNavigate({ from: "/archive" });
-  const { q, month, page } = Route.useSearch();
+  const { q, page } = Route.useSearch();
   const [queryInput, setQueryInput] = useState(q);
   const deferredQuery = useDeferredValue(queryInput);
   const connected = hasArchiveConnection();
   const archive = useQuery({
-    queryKey: ["archive", page, deferredQuery, month],
-    queryFn: () => getArchivePage({ page, pageSize: PAGE_SIZE, query: deferredQuery, month }),
+    queryKey: ["archive", page, deferredQuery],
+    queryFn: () => getArchivePage({ page, pageSize: PAGE_SIZE, query: deferredQuery }),
     enabled: connected,
     placeholderData: (previous) => previous,
   });
   const totalPages = archive.data ? Math.max(1, Math.ceil(archive.data.total / PAGE_SIZE)) : 1;
 
   useEffect(() => setQueryInput(q), [q]);
-  function update(next: { q?: string; month?: string; page?: number }) {
+
+  function update(next: { q?: string; page?: number }) {
     navigate({
-      search: { q: next.q ?? queryInput, month: next.month ?? month, page: next.page ?? 1 },
+      search: { q: next.q ?? queryInput, page: next.page ?? 1 },
       replace: true,
     });
   }
@@ -60,50 +60,43 @@ function Archive() {
         </h1>
         <p className="mt-4 leading-relaxed text-muted-foreground">{t.archiveIntro}</p>
       </header>
-      <div className="mt-10 rounded-[1.6rem] border border-border bg-card p-4 shadow-card">
+      <div className="mx-auto mt-10 max-w-4xl rounded-[1.6rem] border border-border bg-card p-4 shadow-card">
         <form
-          className="grid gap-3 lg:grid-cols-[1fr_auto_auto]"
+          className="flex flex-col gap-3 sm:flex-row"
+          role="search"
           onSubmit={(event) => {
             event.preventDefault();
             update({ q: queryInput, page: 1 });
           }}
         >
-          <label className="relative block">
+          <label className="relative block min-w-0 flex-1">
             <span className="sr-only">{t.searchQuick}</span>
             <Search
-              className="pointer-events-none absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground"
+              className="pointer-events-none absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand"
               aria-hidden="true"
             />
             <input
+              type="search"
               value={queryInput}
               onChange={(event) => setQueryInput(event.target.value)}
               placeholder={t.searchPlaceholder}
-              className="w-full rounded-xl border border-border bg-background py-3 pe-4 ps-12 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
-            />
-          </label>
-          <label className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 text-sm text-muted-foreground">
-            <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-            <span className="sr-only">{t.month}</span>
-            <input
-              type="month"
-              value={month}
-              onChange={(event) => update({ q: queryInput, month: event.target.value, page: 1 })}
-              className="min-w-0 bg-transparent py-3 outline-none"
+              className="w-full rounded-xl border border-border bg-background py-3 pe-4 ps-12 text-foreground outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
             />
           </label>
           <button
             type="submit"
-            className="rounded-xl bg-brand px-6 py-3 font-bold text-brand-foreground"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 font-bold text-brand-foreground transition-colors hover:bg-brand-deep"
           >
+            <Search className="h-4 w-4" aria-hidden="true" />
             {t.searchGo}
           </button>
         </form>
-        {q || month ? (
+        {q ? (
           <button
             type="button"
             onClick={() => {
               setQueryInput("");
-              update({ q: "", month: "", page: 1 });
+              update({ q: "", page: 1 });
             }}
             className="mt-3 text-sm font-bold text-brand underline decoration-brand/35 underline-offset-4"
           >

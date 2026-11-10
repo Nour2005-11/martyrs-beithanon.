@@ -1,7 +1,8 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { matchesMonth, normalizeArchiveText, recordMatchesQuery } from "@/data/arabicSearch";
+import { normalizeArchiveText, recordMatchesQuery } from "@/data/arabicSearch";
+import { formatDateDayMonthYear, parseDayMonthYearToIso } from "@/lib/date-format";
 import { dict } from "@/lib/i18n";
 
 describe("Stage 2 public archive rules", () => {
@@ -12,11 +13,37 @@ describe("Stage 2 public archive rules", () => {
     expect(recordMatchesQuery("إبراهيم أحمد", "Ibrahim Ahmad", "not-a-match")).toBe(false);
   });
 
-  it("filters only by the verified ISO martyrdom-date format", () => {
-    expect(matchesMonth("2024-01-15", "2024-01")).toBe(true);
-    expect(matchesMonth("2024-02-15", "2024-01")).toBe(false);
-    expect(matchesMonth(null, "2024-01")).toBe(false);
-    expect(matchesMonth(null, "")).toBe(true);
+  it("keeps archive filtering name-only and removes the month picker", () => {
+    const archiveRoute = readFileSync(
+      resolve(process.cwd(), "src/routes/archive.index.tsx"),
+      "utf8",
+    );
+    expect(archiveRoute).toContain('type="search"');
+    expect(archiveRoute).not.toContain('type="month"');
+    expect(archiveRoute).not.toContain("month:");
+    expect(recordMatchesQuery("مصطفى ضرغام", "Mustafa Dirgham", "mustafa")).toBe(true);
+  });
+
+  it("formats dates as day-month-year and validates the contribution input", () => {
+    expect(formatDateDayMonthYear("2023-10-07")).toBe("07-10-2023");
+    expect(formatDateDayMonthYear("7/10/2023")).toBe("07-10-2023");
+    expect(parseDayMonthYearToIso("07-10-2023")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("29-02-2024")).toBe("2024-02-29");
+    expect(parseDayMonthYearToIso("31-02-2024")).toBeNull();
+  });
+
+  it("includes the supplied before-and-after city photographs", () => {
+    const photoDirectory = resolve(process.cwd(), "public/images/beit-hanoun-before-after");
+    const photos = [
+      "before-city.jpg",
+      "before-market.jpg",
+      "before-shop.jpg",
+      "before-street.jpg",
+      "after-street.jpg",
+      "after-aerial.jpg",
+      "after-rubble.jpg",
+    ];
+    expect(photos.every((photo) => existsSync(resolve(photoDirectory, photo)))).toBe(true);
   });
 
   it("keeps public labels available in Arabic and English", () => {

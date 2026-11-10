@@ -1,4 +1,4 @@
-import { matchesMonth, recordMatchesQuery } from "./arabicSearch";
+import { recordMatchesQuery } from "./arabicSearch";
 import type {
   ArchivePage,
   ArchiveQuery,
@@ -52,13 +52,12 @@ export async function getArchivePage({
   page,
   pageSize,
   query = "",
-  month,
 }: ArchiveQuery): Promise<ArchivePage> {
   const client = requireClient();
   const normalizedPage = Math.max(1, page);
   const cleanedQuery = query.trim();
 
-  if (!cleanedQuery && !month) {
+  if (!cleanedQuery) {
     const from = (normalizedPage - 1) * pageSize;
     const to = from + pageSize - 1;
     const { data, error, count } = await client
@@ -87,8 +86,7 @@ export async function getArchivePage({
 
   const filtered = ((data ?? []) as DbMartyrRow[])
     .map(toRecord)
-    .filter((record) => recordMatchesQuery(record.arabicName, record.englishName, cleanedQuery))
-    .filter((record) => matchesMonth(record.martyrdomDate, month) || matchesMonth(record.martyrdomDateRaw, month));
+    .filter((record) => recordMatchesQuery(record.arabicName, record.englishName, cleanedQuery));
   const start = (normalizedPage - 1) * pageSize;
 
   return {

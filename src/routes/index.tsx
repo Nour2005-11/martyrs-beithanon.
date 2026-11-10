@@ -40,9 +40,24 @@ function Home() {
   });
   const statisticCards = stats.data
     ? [
-        { label: t.totalRecords, value: stats.data.total, icon: BookOpen },
-        { label: t.recordsWithPhotos, value: stats.data.withPhotos, icon: Image },
-        { label: t.datesForReview, value: stats.data.datesForReview, icon: ShieldCheck },
+        {
+          label: t.totalRecords,
+          value: stats.data.total,
+          icon: BookOpen,
+          accent: "stat-card-green",
+        },
+        {
+          label: t.recordsWithPhotos,
+          value: stats.data.withPhotos,
+          icon: Image,
+          accent: "stat-card-blue",
+        },
+        {
+          label: t.datesForReview,
+          value: stats.data.datesForReview,
+          icon: ShieldCheck,
+          accent: "stat-card-amber",
+        },
       ]
     : [];
 
@@ -59,7 +74,7 @@ function Home() {
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 to="/archive"
-                search={{ q: "", month: "", page: 1 }}
+                search={{ q: "", page: 1 }}
                 className="inline-flex items-center gap-2 rounded-full bg-ivory px-6 py-3.5 font-bold text-brand-deep transition-transform hover:-translate-y-0.5"
               >
                 {t.exploreArchive}
@@ -67,6 +82,7 @@ function Home() {
               </Link>
               <Link
                 to="/suggest"
+                search={{ martyrId: "" }}
                 className="inline-flex items-center gap-2 rounded-full border border-ivory/40 px-6 py-3.5 font-bold text-ivory transition-colors hover:bg-ivory/10"
               >
                 {t.suggestMartyr}
@@ -77,7 +93,7 @@ function Home() {
               role="search"
               onSubmit={(event) => {
                 event.preventDefault();
-                navigate({ to: "/archive", search: { q: query, month: "", page: 1 } });
+                navigate({ to: "/archive", search: { q: query, page: 1 } });
               }}
             >
               <label className="sr-only" htmlFor="home-search">
@@ -123,10 +139,10 @@ function Home() {
           {statisticCards.map((item) => (
             <div
               key={item.label}
-              className="rounded-2xl border border-border bg-card p-6 shadow-card"
+              className={`stat-card ${item.accent} rounded-2xl border border-border bg-card p-6 shadow-card`}
             >
-              <item.icon className="h-5 w-5 text-brand" aria-hidden="true" />
-              <p className="mt-6 font-heading text-4xl font-extrabold text-foreground">
+              <item.icon className="stat-icon h-6 w-6" aria-hidden="true" />
+              <p className="stat-number mt-5 font-heading text-4xl font-extrabold">
                 {item.value.toLocaleString()}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">{item.label}</p>
@@ -156,7 +172,7 @@ function Home() {
           </div>
           <Link
             to="/archive"
-            search={{ q: "", month: "", page: 1 }}
+            search={{ q: "", page: 1 }}
             className="text-sm font-bold text-brand underline decoration-brand/35 decoration-2 underline-offset-4"
           >
             {t.exploreArchive}
@@ -188,6 +204,7 @@ function Home() {
           </div>
           <Link
             to="/suggest"
+            search={{ martyrId: "" }}
             className="shrink-0 rounded-full bg-accent px-5 py-3 text-sm font-bold text-brand-deep"
           >
             {t.contributionAction}
