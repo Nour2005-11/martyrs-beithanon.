@@ -29,10 +29,32 @@ function normalizeDigits(value: string) {
 
 export function parseDayMonthYearToIso(value: string) {
   if (!value.trim()) return null;
-  const match = normalizeDigits(value.trim()).match(/^(\d{2})-(\d{2})-(\d{4})$/);
-  if (!match) return null;
-  const [, day, month, year] = match;
-  return buildIsoDate(Number(day), Number(month), Number(year));
+  const normalized = normalizeDigits(value.trim()).replace(/\s+/g, "");
+  const yearFirst = normalized.match(/^([0-9]{4})[-/.\s]([0-9]{1,2})[-/.\s]([0-9]{1,2})$/);
+  if (yearFirst) {
+    const [, year, month, day] = yearFirst;
+    return buildIsoDate(Number(day), Number(month), Number(year));
+  }
+
+  const compactYearFirst = normalized.match(/^([0-9]{4})([0-9]{2})([0-9]{2})$/);
+  if (compactYearFirst && Number(compactYearFirst[1]) >= 1000) {
+    const [, year, month, day] = compactYearFirst;
+    return buildIsoDate(Number(day), Number(month), Number(year));
+  }
+
+  const compact = normalized.match(/^([0-9]{2})([0-9]{2})([0-9]{4})$/);
+  if (compact) {
+    const [, day, month, year] = compact;
+    return buildIsoDate(Number(day), Number(month), Number(year));
+  }
+
+  const separated = normalized.match(/^([0-9]{1,2})[-/.\s]([0-9]{1,2})[-/.\s]([0-9]{4})$/);
+  if (!separated) return null;
+  const [, first, second, year] = separated;
+  let day = Number(first);
+  let month = Number(second);
+  if (day <= 12 && month > 12) [day, month] = [month, day];
+  return buildIsoDate(day, month, Number(year));
 }
 
 export function formatDateDayMonthYear(value: string | null | undefined) {

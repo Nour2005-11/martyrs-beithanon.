@@ -1,18 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Check,
-  Clock3,
-  Image as ImageIcon,
-  LogIn,
-  LogOut,
-  RefreshCw,
-  ShieldCheck,
-  X,
-} from "lucide-react";
+import { Check, Clock3, LogIn, LogOut, RefreshCw, ShieldCheck, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
+import { AdminPhotoPreview } from "@/components/AdminPhotoPreview";
 import { getSupabaseClient, isSupabaseConfigured } from "@/data/supabaseClient";
 import { formatDateDayMonthYear } from "@/lib/date-format";
+import { usePrefs } from "@/lib/prefs";
+
+type SupabaseClientInstance = NonNullable<ReturnType<typeof getSupabaseClient>>;
 
 type MartyrContribution = {
   id: number;
@@ -23,7 +18,9 @@ type MartyrContribution = {
   notes: string | null;
   status: string;
   created_at: string;
+  previewUrl: string | null;
 };
+type MartyrContributionRow = Omit<MartyrContribution, "previewUrl">;
 type PhotoContribution = {
   id: number;
   martyr_id: number;
@@ -31,7 +28,20 @@ type PhotoContribution = {
   notes: string | null;
   status: string;
   created_at: string;
+  previewUrl: string | null;
 };
+type PhotoContributionRow = Omit<PhotoContribution, "previewUrl">;
+
+async function createPendingPhotoPreview(client: SupabaseClientInstance, path: string) {
+  try {
+    const { data, error } = await client.storage
+      .from("pending-martyr-photos")
+      .createSignedUrl(path, 10 * 60);
+    return error ? null : data.signedUrl;
+  } catch {
+    return null;
+  }
+}
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "لوحة الإدارة | ذاكرة بيت حانون" }] }),
@@ -40,6 +50,7 @@ export const Route = createFileRoute("/admin")({
 
 function AdminDashboard() {
   const client = getSupabaseClient();
+  const { t } = usePrefs();
   const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,16 +70,17 @@ function AdminDashboard() {
   }, [client]);
 
   const load = useCallback(async () => {
-    if (!client || !user) return;
+    const supabase = client;
+    if (!supabase || !user) return;
     setBusy(true);
     setNotice("");
     const [m, p] = await Promise.all([
-      client
+      supabase
         .from("martyr_contributions")
         .select("id,name_ar,name_en,martyrdom_date,image_path,notes,status,created_at")
         .eq("status", "pending")
         .order("created_at", { ascending: true }),
-      client
+      supabase
         .from("photo_contributions")
         .select("id,martyr_id,photo_path,notes,status,created_at")
         .eq("status", "pending")
@@ -77,8 +89,26 @@ function AdminDashboard() {
     if (m.error || p.error)
       setNotice(`تعذر تحميل المساهمات: ${m.error?.message ?? p.error?.message}`);
     else {
-      setMartyrs((m.data ?? []) as MartyrContribution[]);
-      setPhotos((p.data ?? []) as PhotoContribution[]);
+      const martyrRows = (m.data ?? []) as MartyrContributionRow[];
+      const photoRows = (p.data ?? []) as PhotoContributionRow[];
+      const [martyrQueue, photoQueue] = await Promise.all([
+        Promise.all(
+          martyrRows.map(async (item) => ({
+            ...item,
+            previewUrl: item.image_path
+              ? await createPendingPhotoPreview(supabase, item.image_path)
+              : null,
+          })),
+        ),
+        Promise.all(
+          photoRows.map(async (item) => ({
+            ...item,
+            previewUrl: await createPendingPhotoPreview(supabase, item.photo_path),
+          })),
+        ),
+      ]);
+      setMartyrs(martyrQueue);
+      setPhotos(photoQueue);
     }
     setBusy(false);
   }, [client, user]);
@@ -279,13 +309,19 @@ function AdminDashboard() {
                         <p className="mt-3 whitespace-pre-wrap text-sm">{item.notes}</p>
                       )}
                     </div>
-                    {item.image_path ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-xs">
-                        <ImageIcon size={14} /> توجد صورة خاصة
-                      </span>
-                    ) : (
-                      <span className="rounded-full bg-secondary px-3 py-1 text-xs">بدون صورة</span>
-                    )}
+                    <div className="space-y-2">
+                      <p className="text-xs font-bold text-muted-foreground">
+                        {t.adminContributionPhoto}
+                      </p>
+                      <AdminPhotoPreview
+                        hasImage={Boolean(item.image_path)}
+                        previewUrl={item.previewUrl}
+                        alt={t.imageOf(item.name_ar)}
+                        openLabel={t.adminOpenPhoto}
+                        missingLabel={t.adminPhotoMissing}
+                        unavailableLabel={t.adminPhotoPreviewUnavailable}
+                      />
+                    </div>
                   </div>
                   <div className="mt-5 flex flex-wrap gap-2">
                     <button
@@ -318,13 +354,25 @@ function AdminDashboard() {
                     اقتراح صورة لسجل الشهيد رقم {item.martyr_id}
                   </h2>
                   {item.notes && <p className="mt-2 text-sm">{item.notes}</p>}
-                  <p className="mt-2 break-all text-xs text-muted-foreground">
-                    مسار الصورة الخاص: {item.photo_path}
-                  </p>
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    اعتماد صور الشهداء الموجودين غير مفعّل بعد؛ يمكنك مراجعة المساهمة هنا دون
-                    تغييرها.
-                  </p>
+                  <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
+                    <div className="space-y-2">
+                      <p className="text-xs font-bold text-muted-foreground">
+                        {t.adminContributionPhoto}
+                      </p>
+                      <AdminPhotoPreview
+                        hasImage
+                        previewUrl={item.previewUrl}
+                        alt={`${t.uploadPhoto} — ${item.martyr_id}`}
+                        openLabel={t.adminOpenPhoto}
+                        missingLabel={t.adminPhotoMissing}
+                        unavailableLabel={t.adminPhotoPreviewUnavailable}
+                      />
+                    </div>
+                    <p className="max-w-xl text-sm text-muted-foreground">
+                      اعتماد صور الشهداء الموجودين غير مفعّل بعد؛ يمكنك مراجعة المساهمة هنا دون
+                      تغييرها.
+                    </p>
+                  </div>
                   <button
                     onClick={() => void decide("photo", item.id, "reject")}
                     disabled={busy}
