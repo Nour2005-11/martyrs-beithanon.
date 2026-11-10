@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, FileImage, ImagePlus, ShieldCheck, Upload } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { getSupabaseClient, isSupabaseConfigured } from "@/data/supabaseClient";
-import { parseDayMonthYearToIso } from "@/lib/date-format";
+import { formatDateDayMonthYear, parseDayMonthYearToIso } from "@/lib/date-format";
 import { usePrefs } from "@/lib/prefs";
 
 export const Route = createFileRoute("/suggest")({
@@ -224,9 +224,13 @@ function Suggest() {
                     dir="ltr"
                     inputMode="numeric"
                     autoComplete="off"
-                    maxLength={10}
+                    maxLength={20}
                     value={date}
                     onChange={(event) => setDate(event.target.value)}
+                    onBlur={() => {
+                      const iso = parseDayMonthYearToIso(date);
+                      if (iso) setDate(formatDateDayMonthYear(iso) ?? date);
+                    }}
                     placeholder={t.dateFormatPlaceholder}
                     aria-describedby="martyrdom-date-hint"
                     className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"

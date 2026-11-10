@@ -2,7 +2,11 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { normalizeArchiveText, recordMatchesQuery } from "@/data/arabicSearch";
-import { formatDateDayMonthYear, parseDayMonthYearToIso } from "@/lib/date-format";
+import {
+  formatDateDayMonthYear,
+  formatMartyrdomDate,
+  parseDayMonthYearToIso,
+} from "@/lib/date-format";
 import { dict } from "@/lib/i18n";
 
 describe("Stage 2 public archive rules", () => {
@@ -27,7 +31,18 @@ describe("Stage 2 public archive rules", () => {
   it("formats dates as day-month-year and validates the contribution input", () => {
     expect(formatDateDayMonthYear("2023-10-07")).toBe("07-10-2023");
     expect(formatDateDayMonthYear("7/10/2023")).toBe("07-10-2023");
+    expect(formatDateDayMonthYear("10/25/2023")).toBe("25-10-2023");
+    expect(formatDateDayMonthYear("٠٧/١٠/٢٠٢٣")).toBe("07-10-2023");
+    expect(formatDateDayMonthYear("31-02-2024")).toBeNull();
+    expect(formatMartyrdomDate("2023-10-07", "10/07/2023")).toBe("07-10-2023");
     expect(parseDayMonthYearToIso("07-10-2023")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("7/10/2023")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("7 / 10 / 2023")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("07.10.2023")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("07102023")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("20231007")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("٠٧١٠٢٠٢٣")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("2023-10-07")).toBe("2023-10-07");
     expect(parseDayMonthYearToIso("29-02-2024")).toBe("2024-02-29");
     expect(parseDayMonthYearToIso("31-02-2024")).toBeNull();
   });
@@ -44,6 +59,18 @@ describe("Stage 2 public archive rules", () => {
       "after-rubble.jpg",
     ];
     expect(photos.every((photo) => existsSync(resolve(photoDirectory, photo)))).toBe(true);
+  });
+
+  it("previews pending photos through signed URLs and an admin-only storage policy", () => {
+    const adminRoute = readFileSync(resolve(process.cwd(), "src/routes/admin.tsx"), "utf8");
+    const adminSetup = readFileSync(
+      resolve(process.cwd(), "supabase/admin_dashboard_setup.sql"),
+      "utf8",
+    );
+    expect(adminRoute).toContain('.from("pending-martyr-photos")');
+    expect(adminRoute).toContain("createSignedUrl(path, 10 * 60)");
+    expect(adminRoute).toContain("<AdminPhotoPreview");
+    expect(adminSetup).toContain('"Admins can read pending martyr photos"');
   });
 
   it("keeps public labels available in Arabic and English", () => {
