@@ -46,9 +46,8 @@ The source dependency graph requires npm’s legacy peer resolver in this enviro
 
 Do not enable public submission, photo upload, admin login, review/approval actions, or any policy/schema change until the current tables, RLS policies, and private quarantine upload path are inspected and explicitly approved. Deployment configuration is intentionally deferred until the user approves it and provides the intended public domain, which is needed for canonical metadata and a production sitemap.
 
-
 ## Enabling contributions (manual step required)
 
 The contribution UI writes only to the separate `martyr_contributions` and `photo_contributions` pending queues. It does not write to or update `martyrs`. Before publishing these code changes, open `supabase/contributions_setup.sql`, review it, and run it in the Supabase SQL Editor. It creates separate submission tables and a private `pending-martyr-photos` bucket with upload-only public permissions. There is intentionally no public read or approval permission. Review pending rows in the Supabase dashboard; do not approve by changing the main `martyrs` table from the public site.
 
-Photo suggestions require the existing record's numeric ID, which is prefilled when the visitor clicks **إضافة صورة شهيد** on a record without a photo. Image uploads are limited client-side to 8 MB and JPEG/PNG/WebP.
+The unified contribution form accepts either a new martyr entry with an optional photo or an existing record reference (`BH-####` or the numeric ID). When an existing record is entered, only the photo and the single notes field are shown; the existing record's name and date are not repeated. Dates are entered and displayed as `DD-MM-YYYY` (day-month-year) and valid input is converted to ISO (`YYYY-MM-DD`) for storage. Photo uploads remain limited client-side to 8 MB and JPEG/PNG/WebP. The existing pending queues, upload bucket, and database policies are unchanged.
