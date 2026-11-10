@@ -2,13 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpLeft, CalendarDays } from "lucide-react";
 import type { MartyrRecord } from "@/data/martyrTypes";
 import type { Dict } from "@/lib/i18n";
-import { formatDateDayMonthYear } from "@/lib/date-format";
+import { formatMartyrdomDate } from "@/lib/date-format";
 import { MartyrPhoto } from "./MartyrPhoto";
 
 type MartyrCardProps = { record: MartyrRecord; t: Dict };
 
 export function MartyrCard({ record, t }: MartyrCardProps) {
-  const date = formatDateDayMonthYear(record.martyrdomDateRaw || record.martyrdomDate);
+  const date = formatMartyrdomDate(record.martyrdomDate, record.martyrdomDateRaw);
 
   return (
     <article className="group overflow-hidden rounded-[1.35rem] border border-border/90 bg-card shadow-card transition-transform duration-200 hover:-translate-y-1 hover:border-brand/45">
