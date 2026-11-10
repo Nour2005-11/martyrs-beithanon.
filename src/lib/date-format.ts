@@ -13,9 +13,23 @@ function buildIsoDate(day: number, month: number, year: number) {
   return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
+function isoToDayMonthYear(iso: string) {
+  return `${iso.slice(8, 10)}-${iso.slice(5, 7)}-${iso.slice(0, 4)}`;
+}
+
+function normalizeDigits(value: string) {
+  const arabic = "٠١٢٣٤٥٦٧٨٩";
+  const persian = "۰۱۲۳۴۵۶۷۸۹";
+  return value.replace(/[٠-٩۰-۹]/g, (digit) => {
+    const arabicIndex = arabic.indexOf(digit);
+    if (arabicIndex >= 0) return String(arabicIndex);
+    return String(persian.indexOf(digit));
+  });
+}
+
 export function parseDayMonthYearToIso(value: string) {
   if (!value.trim()) return null;
-  const match = value.trim().match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  const match = normalizeDigits(value.trim()).match(/^(\d{2})-(\d{2})-(\d{4})$/);
   if (!match) return null;
   const [, day, month, year] = match;
   return buildIsoDate(Number(day), Number(month), Number(year));
@@ -24,20 +38,36 @@ export function parseDayMonthYearToIso(value: string) {
 export function formatDateDayMonthYear(value: string | null | undefined) {
   const text = value?.trim();
   if (!text) return null;
+  const normalized = normalizeDigits(text);
 
-  const yearFirst = text.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})(?=$|[T\s])/);
+  const yearFirst = normalized.match(
+    /^([0-9]{4})[-/.\s]([0-9]{1,2})[-/.\s]([0-9]{1,2})(?:$|[T\s])/,
+  );
   if (yearFirst) {
     const [, year, month, day] = yearFirst;
     const iso = buildIsoDate(Number(day), Number(month), Number(year));
-    return iso ? `${iso.slice(8, 10)}-${iso.slice(5, 7)}-${iso.slice(0, 4)}` : text;
+    return iso ? isoToDayMonthYear(iso) : null;
   }
 
-  const dayFirst = text.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/);
-  if (dayFirst) {
-    const [, day, month, year] = dayFirst;
-    const iso = buildIsoDate(Number(day), Number(month), Number(year));
-    return iso ? `${iso.slice(8, 10)}-${iso.slice(5, 7)}-${iso.slice(0, 4)}` : text;
-  }
+  const separated = normalized.match(
+    /^([0-9]{1,2})[-/.\s]([0-9]{1,2})[-/.\s]([0-9]{4})(?:$|[T\s])/,
+  );
+  if (!separated) return null;
 
-  return text;
+  const [, first, second, year] = separated;
+  let day = Number(first);
+  let month = Number(second);
+  // If only the second field can be a day, treat the source as month-first and normalize it.
+  if (day <= 12 && month > 12) {
+    [day, month] = [month, day];
+  }
+  const iso = buildIsoDate(day, month, Number(year));
+  return iso ? isoToDayMonthYear(iso) : null;
+}
+
+export function formatMartyrdomDate(
+  canonicalDate: string | null | undefined,
+  rawDate: string | null | undefined,
+) {
+  return formatDateDayMonthYear(canonicalDate) ?? formatDateDayMonthYear(rawDate);
 }
