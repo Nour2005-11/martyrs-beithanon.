@@ -49,8 +49,8 @@ const ar = {
   martyrdomDate: "تاريخ الاستشهاد",
   dateFormatPlaceholder: "يوم-شهر-سنة",
   dateFormatHint:
-    "اكتبي اليوم ثم الشهر ثم السنة. اقبلي الفواصل - أو / أو .، أو اكتبي 8 أرقام متتابعة مثل 07102023.",
-  dateFormatError: "التاريخ غير صالح. اكتبي اليوم ثم الشهر ثم السنة، مثل 07-10-2023 أو 07102023.",
+    "اكتبي التاريخ بإحدى الصيغ: 07-10-2023 أو 07/10/2023 أو 2023-10-07 أو 2023/10/07. يظهر التاريخ الصحيح تلقائيًا بصيغة يوم-شهر-سنة.",
+  dateFormatError: "التاريخ غير صالح. تحققي من صحته واستخدمي صيغة مثل 07/10/2023 أو 2023/10/07.",
   birthDate: "تاريخ الميلاد",
   source: "المصدر",
   archiveReference: "مرجع الأرشيف",
@@ -216,8 +216,9 @@ const en: typeof ar = {
   martyrdomDate: "Martyrdom date",
   dateFormatPlaceholder: "DD-MM-YYYY",
   dateFormatHint:
-    "Enter day, then month, then year. Use -, / or . as separators, or type 8 digits such as 07102023.",
-  dateFormatError: "Invalid date. Enter day, month and year, such as 07-10-2023 or 07102023.",
+    "Use day-month-year (07-10-2023 or 07/10/2023) or year-month-day (2023-10-07 or 2023/10/07). Valid dates are normalized to day-month-year.",
+  dateFormatError:
+    "Invalid date. Try day-month-year, such as 07/10/2023, or year-month-day, such as 2023/10/07.",
   birthDate: "Birth date",
   source: "Source",
   archiveReference: "Archive reference",

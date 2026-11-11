@@ -36,13 +36,15 @@ describe("Stage 2 public archive rules", () => {
     expect(formatDateDayMonthYear("31-02-2024")).toBeNull();
     expect(formatMartyrdomDate("2023-10-07", "10/07/2023")).toBe("07-10-2023");
     expect(parseDayMonthYearToIso("07-10-2023")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("07/10/2023")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("2023/10/07")).toBe("2023-10-07");
+    expect(parseDayMonthYearToIso("2023-10-07")).toBe("2023-10-07");
     expect(parseDayMonthYearToIso("7/10/2023")).toBe("2023-10-07");
     expect(parseDayMonthYearToIso("7 / 10 / 2023")).toBe("2023-10-07");
     expect(parseDayMonthYearToIso("07.10.2023")).toBe("2023-10-07");
     expect(parseDayMonthYearToIso("07102023")).toBe("2023-10-07");
     expect(parseDayMonthYearToIso("20231007")).toBe("2023-10-07");
     expect(parseDayMonthYearToIso("٠٧١٠٢٠٢٣")).toBe("2023-10-07");
-    expect(parseDayMonthYearToIso("2023-10-07")).toBe("2023-10-07");
     expect(parseDayMonthYearToIso("29-02-2024")).toBe("2024-02-29");
     expect(parseDayMonthYearToIso("31-02-2024")).toBeNull();
   });
